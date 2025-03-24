@@ -32,10 +32,8 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Handle successful login (e.g., store token, redirect)
         router.push('/dashboard');
       } else {
-        // Handle error
         console.error('Login failed');
       }
     } catch (error) {

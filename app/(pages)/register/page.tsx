@@ -33,10 +33,8 @@ const Register: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Handle successful registration
         router.push('/login');
       } else {
-        // Handle error
         console.error('Registration failed');
       }
     } catch (error) {
