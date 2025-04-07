@@ -82,13 +82,14 @@ const Register: React.FC = () => {
                 id="password"
                 type="password"
                 value={formData.password}
+                placeholder='********'
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
               />
             </div>
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
+              className="cursor-pointer w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -106,7 +107,7 @@ const Register: React.FC = () => {
               </span>
               <Button
                 variant="link"
-                className="text-indigo-600 dark:text-indigo-400 p-0"
+                className="text-indigo-600 dark:text-indigo-400 p-0 cursor-pointer"
                 onClick={() => router.push('/login')}
               >
                 Sign in

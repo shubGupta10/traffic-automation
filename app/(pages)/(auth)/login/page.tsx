@@ -8,8 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const Login: React.FC = () => {
+  const {setUserDetails, setAuthToken} = useAuthStore();
     const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -32,7 +34,11 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        router.push('/dashboard');
+        console.log(data);
+        setUserDetails(data);
+        setAuthToken(data.token);
+
+        router.push('/select-services');
       } else {
         console.error('Login failed');
       }
@@ -71,13 +77,14 @@ const Login: React.FC = () => {
                 id="password"
                 type="password"
                 value={formData.password}
+                placeholder='********'
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
               />
             </div>
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
+              className="w-full cursor-pointer bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -95,7 +102,7 @@ const Login: React.FC = () => {
               </span>
               <Button
                 variant="link"
-                className="text-indigo-600 dark:text-indigo-400 p-0"
+                className="text-indigo-600 dark:text-indigo-400 p-0 cursor-pointer"
                 onClick={() => router.push('/register')}
               >
                 Sign up
