@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, User, Home, BarChart3, Settings, PlusCircle } from 'lucide-react';
+import { Menu, LogOut, User, Home, BarChart3, Settings, PlusCircle, FormInputIcon } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
@@ -21,6 +21,8 @@ import {
 const Navbar: FC = () => {
   const router = useRouter();
   const { user, authToken, logout } = useAuthStore();
+  console.log("Current User",user);
+  
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -69,11 +71,22 @@ const Navbar: FC = () => {
     router.push("/register");
   };
 
-  const navLinks = [
-    { name: "Home", icon: <Home className="h-4 w-4" />, path: "/" },
-    { name: "Services", icon: <PlusCircle className="h-4 w-4" />, path: "/select-services" },
-    { name: "Dashboard", icon: <BarChart3 className="h-4 w-4" />, path: "/dashboard" },
-  ];
+  // Generate nav links based on user role
+  const getNavLinks = () => {
+    const links = [
+      { name: "Home", icon: <Home className="h-4 w-4" />, path: "/" },
+      { name: "Services", icon: <PlusCircle className="h-4 w-4" />, path: "/select-services" },
+    ];
+    
+    // Only show Data Form for admin users
+    if (user?.isAdmin) {
+      links.push({ name: "Data Form", icon: <FormInputIcon className="h-4 w-4" />, path: "/data-form" });
+    }
+    
+    links.push({ name: "Dashboard", icon: <BarChart3 className="h-4 w-4" />, path: "/dashboard" });
+    
+    return links;
+  };
 
   const getUserInitials = () => {
     if (!user?.email) return "TA";
@@ -82,9 +95,9 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className={`sticky top-0 w-full bg-gradient-to-r from-indigo-600/95 to-blue-600/95 backdrop-blur-md z-50 transition-all duration-300 ${scrolled ? 'shadow-md border-b border-white/10 py-2' : 'py-4'}`}>
+    <nav className={`sticky top-0 w-full bg-gradient-to-r from-indigo-600 to-blue-600 z-50 transition-all duration-300 ${scrolled ? 'shadow-md border-b border-white/10 py-2' : 'py-3'}`}>
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center">
           <span 
             onClick={() => {router.push("/")}} 
             className="cursor-pointer text-2xl font-bold text-white flex items-center"
@@ -98,10 +111,10 @@ const Navbar: FC = () => {
         </div>
         
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex items-center space-x-6">
           {isAuthenticated && (
-            <div className="flex items-center space-x-6 mr-6">
-              {navLinks.map((link) => (
+            <div className="flex items-center space-x-4">
+              {getNavLinks().map((link) => (
                 <TooltipProvider key={link.path}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -123,9 +136,9 @@ const Navbar: FC = () => {
             </div>
           )}
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center ml-4">
             {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="rounded-full p-0 h-10 w-10 text-sm bg-white/10 hover:bg-white/20 cursor-pointer">
@@ -150,6 +163,12 @@ const Navbar: FC = () => {
                       <PlusCircle className="mr-2 h-4 w-4" />
                       <span>Select Services</span>
                     </DropdownMenuItem>
+                    {user?.isAdmin && (
+                      <DropdownMenuItem onClick={() => router.push("/data-form")} className="cursor-pointer hover:text-white">
+                        <FormInputIcon className="mr-2 h-4 w-4" />
+                        <span>Data Form</span>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500 cursor-pointer hover:text-white">
                       <LogOut className="mr-2 h-4 w-4" />
@@ -199,14 +218,14 @@ const Navbar: FC = () => {
                         </AvatarFallback>
                       </Avatar>
                       {user?.email && (
-                        <div className="text-white/90 font-medium">
+                        <div className="text-white/90 font-medium truncate">
                           {user.email}
                         </div>
                       )}
                     </div>
                     
                     <div className="space-y-1">
-                      {navLinks.map((link) => (
+                      {getNavLinks().map((link) => (
                         <Button 
                           key={link.path}
                           variant="ghost" 

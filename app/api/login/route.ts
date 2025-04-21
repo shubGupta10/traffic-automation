@@ -47,6 +47,7 @@ export async function POST(req: NextRequest){
             message: "Login successfull",
             id: existingUser._id,
             email: existingUser.email,
+            isAdmin: existingUser.isAdmin,
             token
         }, {status: 200})
 

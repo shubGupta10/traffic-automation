@@ -7,8 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Car, Shield, FileSearch, ArrowRight, CheckCircle2, Play, ChevronRight } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useAuthStore } from "@/stores/useAuthStore"
 
 const TrafficAutoHomepage: React.FC = () => {
+  const {user} = useAuthStore()
+  const router = useRouter();
   const heroRef = useRef<HTMLDivElement>(null)
   const isHeroInView = useInView(heroRef, { once: false })
 
@@ -55,6 +59,10 @@ const TrafficAutoHomepage: React.FC = () => {
     "Secure data handling with privacy protection",
     "Easy integration with existing traffic systems",
   ]
+
+  const handleGetStarted = () => {
+    {user ? router.push("/dashboard") : router.push("/register")}
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 overflow-x-hidden">
@@ -110,6 +118,7 @@ const TrafficAutoHomepage: React.FC = () => {
                 transition={{ duration: 0.7, delay: 0.8 }}
               >
                 <Button
+                onClick={handleGetStarted}
                   size="lg"
                   className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all duration-300 cursor-pointer"
                 >
@@ -286,11 +295,11 @@ const TrafficAutoHomepage: React.FC = () => {
 
       {/* CTA Section */}
       <section ref={ctaRef} className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-cyan-600" />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50" />
 
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
-            className="max-w-3xl mx-auto text-center text-white space-y-8"
+            className="max-w-3xl mx-auto text-center text-black space-y-8"
             initial={{ opacity: 0, y: 30 }}
             animate={isCtaInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7 }}
@@ -320,6 +329,7 @@ const TrafficAutoHomepage: React.FC = () => {
               transition={{ duration: 0.7, delay: 0.6 }}
             >
               <Button
+              onClick={handleGetStarted}
                 size="lg"
                 variant="secondary"
                 className="bg-white text-blue-600 hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
@@ -328,13 +338,6 @@ const TrafficAutoHomepage: React.FC = () => {
                 <ChevronRight className="ml-2 h-5 w-5" />
               </Button>
 
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-white bg-white/10 cursor-pointer transition-colors"
-              >
-                Schedule Demo
-              </Button>
             </motion.div>
           </motion.div>
         </div>

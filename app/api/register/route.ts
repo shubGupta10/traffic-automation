@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
         const user = new User({
             name,
             email,
+            isAdmin: false,
             password: hashedPassword,
         })
 
