@@ -12,11 +12,14 @@ export async function POST(req: NextRequest) {
       vehicle_number,
       vehicle_type,
       helmet_detected,
+      helmet_detected_image_path,
       number_plate_type,
       image_path,
       location,
       non_helmet_rider,
+      non_helmet_rider_image_path,
       passenger_with_helmet,
+      passenger_with_helmet_image_path,
       vehicle_speed,
     } = body;
 
@@ -43,11 +46,14 @@ export async function POST(req: NextRequest) {
       vehicle_number,
       vehicle_type,
       helmet_detected,
+      helmet_detected_image_path,
       number_plate_type,
       image_path,
       location,
       non_helmet_rider,
+      non_helmet_rider_image_path,
       passenger_with_helmet,
+      passenger_with_helmet_image_path,
       vehicle_speed,
     });
 

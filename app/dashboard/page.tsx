@@ -155,8 +155,8 @@ function Dashboard() {
 
   // Determine scan status based on properties
   const getScanStatus = (scan: Scan): string => {
-    if (scan.non_helmet_rider) {
-      return "warning"
+    if (scan.helmet_detected === false) {
+      return "pending"
     }
     return "success"
   }
@@ -358,7 +358,9 @@ function Dashboard() {
                             {new Date(scan.timestamp).toLocaleTimeString()}
                           </div>
                         </td>
-                        <td className="p-4">{getStatusBadge(getScanStatus(scan))}</td>
+                        <td className={`px-2 py-1 rounded-full text-white text-2xl font-medium ${getScanStatus(scan) === "pending" ? "text-yellow-500" : "text-green-500"
+                          }`}
+                        >{getStatusBadge(getScanStatus(scan))}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, User, Home, BarChart3, Settings, PlusCircle, FormInputIcon, NotebookText } from 'lucide-react';
+import { Menu, LogOut, User, Home, BarChart3, Settings, PlusCircle, FormInputIcon, NotebookText, User2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useRouter } from 'next/navigation';
 import { FC } from 'react';
@@ -21,7 +21,7 @@ import {
 const Navbar: FC = () => {
   const router = useRouter();
   const { user, authToken, logout } = useAuthStore();
-  console.log("Current User",user);
+  console.log("Current User", user);
   
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -73,15 +73,23 @@ const Navbar: FC = () => {
 
   // Generate nav links based on user role
   const getNavLinks = () => {
-    const links = [
-      { name: "Home", icon: <Home className="h-4 w-4" />, path: "/" },
-      { name: "Services", icon: <PlusCircle className="h-4 w-4" />, path: "/select-services" },
-      { name: "Data Form", icon: <NotebookText className="h-4 w-4" />, path: "/data-form" },
-    ];
+    const isAdmin = user?.isAdmin === true;
     
-    links.push({ name: "Dashboard", icon: <BarChart3 className="h-4 w-4" />, path: "/dashboard" });
-    
-    return links;
+    if (isAdmin) {
+      // Only show Home and Admin Dashboard for admins
+      return [
+        { name: "Home", icon: <Home className="h-4 w-4" />, path: "/" },
+        { name: "Admin Dashboard", icon: <User2 className="h-4 w-4" />, path: "/admin-dashboard" },
+      ];
+    } else {
+      // Show everything except Admin Dashboard for non-admins
+      return [
+        { name: "Home", icon: <Home className="h-4 w-4" />, path: "/" },
+        { name: "Services", icon: <PlusCircle className="h-4 w-4" />, path: "/select-services" },
+        { name: "Data Form", icon: <NotebookText className="h-4 w-4" />, path: "/data-form" },
+        { name: "Dashboard", icon: <BarChart3 className="h-4 w-4" />, path: "/dashboard" },
+      ];
+    }
   };
 
   const getUserInitials = () => {
@@ -151,18 +159,34 @@ const Navbar: FC = () => {
                       <div className="px-2 py-1.5 text-sm text-gray-500">{user.email}</div>
                     )}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push("/dashboard")} className="cursor-pointer hover:text-white">
-                      <BarChart3 className="mr-2 h-4 w-4" />
-                      <span>Dashboard</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/select-services")} className="cursor-pointer hover:text-white">
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      <span>Select Services</span>
-                    </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push("/data-form")} className="cursor-pointer hover:text-white">
-                        <FormInputIcon className="mr-2 h-4 w-4" />
-                        <span>Data Form</span>
-                      </DropdownMenuItem>
+                    {/* Update dropdown menu items based on admin status */}
+                    {user?.isAdmin ? (
+                      <>
+                        <DropdownMenuItem onClick={() => router.push("/")} className="cursor-pointer hover:text-white">
+                          <Home className="mr-2 h-4 w-4" />
+                          <span>Home</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push("/admin-dashboard")} className="cursor-pointer hover:text-white">
+                          <User2 className="mr-2 h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </DropdownMenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <DropdownMenuItem onClick={() => router.push("/dashboard")} className="cursor-pointer hover:text-white">
+                          <BarChart3 className="mr-2 h-4 w-4" />
+                          <span>Dashboard</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push("/select-services")} className="cursor-pointer hover:text-white">
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          <span>Select Services</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push("/data-form")} className="cursor-pointer hover:text-white">
+                          <FormInputIcon className="mr-2 h-4 w-4" />
+                          <span>Data Form</span>
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500 cursor-pointer hover:text-white">
                       <LogOut className="mr-2 h-4 w-4" />

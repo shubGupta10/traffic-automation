@@ -5,13 +5,16 @@ export interface IDetection extends Document {
   userId: string;
   vehicle_number: string;
   vehicle_type: 'Bike' | 'Car' | 'Truck' | string;
-  helmet_detected: boolean;
+  helmet_detected?: boolean;
+  helmet_detected_image_path?: string;
   number_plate_type: 'White' | 'Yellow' | 'Red' | 'Green' | 'Black' | string;
   timestamp: Date;
   image_path: string;
   location: string; 
-  non_helmet_rider: boolean;
-  passenger_with_helmet: boolean;
+  non_helmet_rider?: boolean;
+  non_helmet_rider_image_path?: string;
+  passenger_with_helmet?: boolean;
+  passenger_with_helmet_image_path?: string;
   vehicle_speed: number;
 }
 
@@ -32,8 +35,12 @@ const DetectionSchema: Schema = new Schema<IDetection>(
     },
     helmet_detected: {
       type: Boolean,
-      required: true,
+      required: false,
     },
+      helmet_detected_image_path: {
+        type: String,
+        required: true,
+      },
     number_plate_type: {
       type: String,
       enum: ['White', 'Yellow', 'Red', 'Green', 'Black'],
@@ -53,10 +60,18 @@ const DetectionSchema: Schema = new Schema<IDetection>(
     },
     non_helmet_rider: {
       type: Boolean,
+      required: false,
+    },
+    non_helmet_rider_image_path: {
+      type: String,
       required: true,
     },
     passenger_with_helmet: {
       type: Boolean,
+      required: false,
+    },
+    passenger_with_helmet_image_path: {
+      type: String,
       required: true,
     },
     vehicle_speed: {

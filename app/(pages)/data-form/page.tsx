@@ -6,10 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuthStore } from '@/stores/useAuthStore';
-import { UploadIcon, MapPin, Save, ArrowLeft } from 'lucide-react';
+import { UploadIcon, MapPin, Save, ArrowLeft, Image } from 'lucide-react';
 
 const DetectionForm = () => {
   const router = useRouter();
@@ -17,13 +16,16 @@ const DetectionForm = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     vehicle_number: '',
-    vehicle_type: 'Car', // Updated to match enum case
-    helmet_detected: false,
-    number_plate_type: 'White', // Updated to match enum case
+    vehicle_type: 'Car',
+    helmet_detected: false, // keeping the boolean field
+    helmet_detected_image_path: '', // adding new image path field
+    number_plate_type: 'White',
     image_path: '/uploads/sample-image.jpg', 
     location: '',
-    non_helmet_rider: false,
-    passenger_with_helmet: false,
+    non_helmet_rider: false, // keeping the boolean field
+    non_helmet_rider_image_path: '', // adding new image path field
+    passenger_with_helmet: false, // keeping the boolean field
+    passenger_with_helmet_image_path: '', // adding new image path field
     vehicle_speed: 0,
   });
 
@@ -39,10 +41,6 @@ const DetectionForm = () => {
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSwitchChange = (name: keyof typeof formData) => {
-    setFormData({ ...formData, [name]: !formData[name] });
   };
 
   const handleSelectChange = (name: keyof typeof formData, value: any) => {
@@ -140,7 +138,6 @@ const DetectionForm = () => {
                       <SelectValue placeholder="Select vehicle type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {/* Updated to match enum values from schema */}
                       <SelectItem value="Bike">Bike</SelectItem>
                       <SelectItem value="Car">Car</SelectItem>
                       <SelectItem value="Truck">Truck</SelectItem>
@@ -159,7 +156,6 @@ const DetectionForm = () => {
                       <SelectValue placeholder="Select plate type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {/* Updated to match enum values from schema */}
                       <SelectItem value="White">White</SelectItem>
                       <SelectItem value="Yellow">Yellow</SelectItem>
                       <SelectItem value="Red">Red</SelectItem>
@@ -198,11 +194,11 @@ const DetectionForm = () => {
                   />
                 </div>
 
-                {/* Image Path */}
+                {/* Main Image Path */}
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="image_path" className="flex items-center gap-2">
                     <UploadIcon className="h-4 w-4" />
-                    Image Path
+                    Main Image Path
                   </Label>
                   <Input
                     id="image_path"
@@ -213,48 +209,66 @@ const DetectionForm = () => {
                     required
                   />
                   <p className="text-xs text-gray-500">
-                    Enter the path where the image is stored on the server
+                    Enter the path where the main detection image is stored
                   </p>
                 </div>
               </div>
 
               <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h3 className="font-medium text-lg mb-4">Helmet Detection Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Helmet Detected */}
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="helmet_detected" className="cursor-pointer">
-                      Helmet Detected
+                <h3 className="font-medium text-lg mb-4">Helmet Detection Images</h3>
+                <div className="grid grid-cols-1 gap-6">
+                  {/* Helmet Detected Image */}
+                  <div className="space-y-2">
+                    <Label htmlFor="helmet_detected_image_path" className="flex items-center gap-2">
+                      <Image className="h-4 w-4" />
+                      Helmet Detected Image URL
                     </Label>
-                    <Switch
-                      id="helmet_detected"
-                      checked={formData.helmet_detected}
-                      onCheckedChange={() => handleSwitchChange('helmet_detected')}
+                    <Input
+                      id="helmet_detected_image_path"
+                      name="helmet_detected_image_path"
+                      placeholder="https://example.com/helmet-detected.jpg"
+                      value={formData.helmet_detected_image_path}
+                      onChange={handleInputChange}
                     />
+                    <p className="text-xs text-gray-500">
+                      URL to image showing helmet detection
+                    </p>
                   </div>
 
-                  {/* Non-Helmet Rider */}
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="non_helmet_rider" className="cursor-pointer">
-                      Non-Helmet Rider
+                  {/* Non-Helmet Rider Image */}
+                  <div className="space-y-2">
+                    <Label htmlFor="non_helmet_rider_image_path" className="flex items-center gap-2">
+                      <Image className="h-4 w-4" />
+                      Non-Helmet Rider Image URL
                     </Label>
-                    <Switch
-                      id="non_helmet_rider"
-                      checked={formData.non_helmet_rider}
-                      onCheckedChange={() => handleSwitchChange('non_helmet_rider')}
+                    <Input
+                      id="non_helmet_rider_image_path"
+                      name="non_helmet_rider_image_path"
+                      placeholder="https://example.com/non-helmet-rider.jpg"
+                      value={formData.non_helmet_rider_image_path}
+                      onChange={handleInputChange}
                     />
+                    <p className="text-xs text-gray-500">
+                      URL to image showing rider without helmet
+                    </p>
                   </div>
 
-                  {/* Passenger with Helmet */}
-                  <div className="flex items-center justify-between md:col-span-2">
-                    <Label htmlFor="passenger_with_helmet" className="cursor-pointer">
-                      Passenger with Helmet
+                  {/* Passenger with Helmet Image */}
+                  <div className="space-y-2">
+                    <Label htmlFor="passenger_with_helmet_image_path" className="flex items-center gap-2">
+                      <Image className="h-4 w-4" />
+                      Passenger with Helmet Image URL
                     </Label>
-                    <Switch
-                      id="passenger_with_helmet"
-                      checked={formData.passenger_with_helmet}
-                      onCheckedChange={() => handleSwitchChange('passenger_with_helmet')}
+                    <Input
+                      id="passenger_with_helmet_image_path"
+                      name="passenger_with_helmet_image_path"
+                      placeholder="https://example.com/passenger-with-helmet.jpg"
+                      value={formData.passenger_with_helmet_image_path}
+                      onChange={handleInputChange}
                     />
+                    <p className="text-xs text-gray-500">
+                      URL to image showing passenger wearing helmet
+                    </p>
                   </div>
                 </div>
               </div>
